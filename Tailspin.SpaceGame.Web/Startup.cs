@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TailSpin.SpaceGame.Web.Models;
@@ -27,7 +26,9 @@ namespace TailSpin.SpaceGame.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddRazorPages();    
+            services.AddRazorPages().AddMvcOptions(options => options.EnableEndpointRouting = false);
+            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             // Add document stores. These are passed to the HomeController constructor.
             services.AddSingleton<IDocumentDBRepository<Score>>(new LocalDocumentDBRepository<Score>(@"SampleData/scores.json"));
@@ -35,28 +36,28 @@ namespace TailSpin.SpaceGame.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
-            }
+            app.UseExceptionHandler("/Home/Error");
+            app.UseHsts();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseMvc(routes =>
+            app.UseRouting();
+            app.UseEndpoints(endpoints => 
+            {
+                endpoints.MapControllerRoute("default",
+                     "{controller=Home}/{action=Index}/{id?}");
+            });
+
+            /* app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            }); */
         }
     }
 }
