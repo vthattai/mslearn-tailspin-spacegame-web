@@ -55,8 +55,8 @@ steps:
     command: 'publish'
     projects: '**/*.csproj'
     publishWebProjects: false
-    arguents: '--no-build --configuration Release --output $(Build.ArtifactStagingDirectory)/Release'
-      zipAfterPublish: true
+    arguments: '--no-build --configuration Release --output $(Build.ArtifactStagingDirectory)/Release'
+    zipAfterPublish: true
   
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
