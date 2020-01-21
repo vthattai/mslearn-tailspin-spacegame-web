@@ -16,7 +16,7 @@ variables:
 
 steps:
 - task : UseDotNet@2
-  displayName:'Use Dotnet 3.0 SDK'
+  displayName: 'Use Dotnet 3.0 SDK'
   inputs:
     packageType: sdk
     version: 3.0.101
