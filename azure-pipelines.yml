@@ -2,7 +2,7 @@ trigger:
 - '*'
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'ubuntu-16.04'
   demands:
     - npm
 
@@ -12,10 +12,15 @@ variables:
   dotnetSdkVersion: '3.1.100'
 
 steps:
-- task: DotNetCoreInstaller@0
+- task: UseDotNet@2
   displayName: 'Use .NET Core SDK $(dotnetSdkVersion)'
   inputs:
     version: '$(dotnetSdkVersion)'
+
+- task: UseDotNet@2
+  displayName: 'Use .NET Core SDK 3.1.505 for SonarCloud'
+  inputs:
+    version: '3.1.100'
 
 - task: Npm@1
   displayName: 'Run npm install'
@@ -41,7 +46,7 @@ steps:
 - task: SonarCloudPrepare@1
   displayName: 'Prepare SonarCloud analysis'
   inputs:
-    SonarCloud: 'spacegamewebsonarcloud'
+    SonarCloud: 'SonarCloud connection 1'
     organization: '$(SonarOrganization)'
     scannerMode: 'MSBuild'
     projectKey: '$(SonarProjectKey)'
@@ -63,7 +68,7 @@ steps:
   inputs:
     command: custom
     custom: tool
-    arguments: 'install --global dotnet-reportgenerator-globaltool'  
+    arguments: 'install --global dotnet-reportgenerator-globaltool'
 
 - task: DotNetCoreCLI@2
   displayName: 'Run unit tests - $(buildConfiguration)'
